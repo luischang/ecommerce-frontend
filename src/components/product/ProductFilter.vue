@@ -1,7 +1,46 @@
 <template>
-  <h1>Este es Product Filter</h1>
+  <h6>Filtros</h6>
+  <div class="category-filter">
+    <q-select v-model="selectedCategory" :options="categories" option-value="id" option-label="description"
+      label="Categoría" dense outlined>
+    </q-select>
+  </div>
+
+  <div class="price-filter">
+
+  </div>
 </template>
 
 <style></style>
 <script>
+export default {
+  name: "ProductFilter",
+  data() {
+    return {
+      categories: [],
+      selectedCategory: null,
+      priceRange: [0, 1000],
+    };
+  },
+  mounted() {
+    this.loadCategories();
+  },
+  methods: {
+    loadCategories() {
+      // Lógica para obtener categorías desde una API o fuente de datos
+      let endpointURL = "/api/category";
+      // Obtener token
+      let token = JSON.parse(localStorage.getItem("token"));
+
+      this.$api.get(endpointURL, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((response) => {
+        console.log(response.data);
+        this.categories = response.data;
+      });
+    },
+  },
+};
 </script>
