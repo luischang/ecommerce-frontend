@@ -13,6 +13,8 @@
 
 <style></style>
 <script>
+import { useProductStore } from "src/stores/product-store";
+
 export default {
   name: "ProductFilter",
   data() {
@@ -20,7 +22,18 @@ export default {
       categories: [],
       selectedCategory: null,
       priceRange: [0, 1000],
+      productStore: useProductStore(),
     };
+  },
+  watch: {
+    selectedCategory(newValue) {
+      // Actualizar la store cuando cambia la categoría seleccionada
+      if (newValue !== null && newValue !== undefined) {
+        this.productStore.setSelectedCategoryId(newValue.id);
+      } else {
+        this.productStore.clearSelectedCategoryId();
+      }
+    },
   },
   mounted() {
     this.loadCategories();

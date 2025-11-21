@@ -17,6 +17,8 @@
 </style>
 <script>
 import ProductItem from "src/components/product/ProductItem.vue";
+import { useProductStore } from "src/stores/product-store";
+
 export default {
   name: "ProductList",
   components: {
@@ -25,8 +27,17 @@ export default {
   data() {
     return {
       products: [],
+      allProducts: [],
+      productStore: useProductStore(),
     };
-  },  mounted() {
+  },
+  watch: {
+    'productStore.selectedCategoryId'(newValue) {
+      // Filtrar productos cuando cambia la categoría seleccionada
+      this.filterProducts(newValue);
+    },
+  },
+  mounted() {
     this.loadProducts();
   },
   methods: {
@@ -40,8 +51,20 @@ export default {
         },
       }).then((response) => {
         //console.log(response.data);
+        this.allProducts = response.data;
         this.products = response.data;
       });
+    },
+    filterProducts(categoryId) {
+      if (categoryId === null || categoryId === undefined) {
+        // Mostrar todos los productos si no hay categoría seleccionada
+        this.products = this.allProducts;
+      } else {
+        // Filtrar productos por categoría
+        this.products = this.allProducts.filter(
+          (product) => product.categoryId === categoryId
+        );
+      }
     },
   },
 };
